@@ -390,8 +390,7 @@ inline reverse_iterator<_Iterator>
 #ifndef __STL_LIMITED_DEFAULT_TEMPLATES
 template <class _RandomAccessIterator, class _Tp, class _Reference = _Tp&, class _Distance = ptrdiff_t> 
 #else
-template <class _RandomAccessIterator, class _Tp, class _Reference,
-class _Distance> 
+template <class _RandomAccessIterator, class _Tp, class _Reference, class _Distance> 
 #endif
 class reverse_iterator 
 {
@@ -650,9 +649,7 @@ private:
 // return a cached character, and calls to operator++ use snextc.  Before
 // operator* or operator++ has been called, _M_is_initialized is false.
 template<class _CharT, class _Traits>
-class istreambuf_iterator
-	: public iterator<input_iterator_tag, _CharT,
-	typename _Traits::off_type, _CharT*, _CharT&>
+class istreambuf_iterator : public iterator<input_iterator_tag, _CharT, typename _Traits::off_type, _CharT*, _CharT&>
 {
 public:
 	typedef _CharT                           char_type;
@@ -669,7 +666,8 @@ public:
 	{ return _M_is_initialized ? _M_c : _M_dereference_aux(); }
 
 	istreambuf_iterator& operator++() { this->_M_nextc(); return *this; }
-	istreambuf_iterator  operator++(int) {
+	istreambuf_iterator  operator++(int) 
+	{
 		if (!_M_is_initialized)
 			_M_postincr_aux();
 		istreambuf_iterator __tmp = *this;
@@ -677,14 +675,14 @@ public:
 		return __tmp;
 	}
 
-	bool equal(const istreambuf_iterator& __i) const {
-		return this->_M_is_initialized && __i._M_is_initialized
-			? this->_M_eof == __i._M_eof
-			: this->_M_equal_aux(__i);
+	bool equal(const istreambuf_iterator& __i) const 
+	{
+		return this->_M_is_initialized && __i._M_is_initialized ? this->_M_eof == __i._M_eof : this->_M_equal_aux(__i);
 	}
 
 private:
-	void _M_init(streambuf_type* __p) {
+	void _M_init(streambuf_type* __p) 
+	{
 		_M_buf = __p;
 		_M_eof = !__p;
 		_M_is_initialized = _M_eof;
@@ -694,14 +692,16 @@ private:
 	bool _M_equal_aux(const istreambuf_iterator&) const;
 	void _M_postincr_aux();
 
-	void _M_nextc() {
+	void _M_nextc() 
+	{
 		int_type __c = _M_buf->snextc();
 		_M_c = traits_type::to_char_type(__c);    
 		_M_eof = traits_type::eq_int_type(__c, traits_type::eof());
 		_M_is_initialized = true;
 	}
 
-	void _M_getc() const {
+	void _M_getc() const 
+	{
 		int_type __c = _M_buf->sgetc();
 		_M_c = traits_type::to_char_type(__c);
 		_M_eof = traits_type::eq_int_type(__c, traits_type::eof());
@@ -723,8 +723,7 @@ _CharT istreambuf_iterator<_CharT, _Traits>::_M_dereference_aux() const
 }
 
 template<class _CharT, class _Traits>
-bool istreambuf_iterator<_CharT, _Traits>
-	::_M_equal_aux(const istreambuf_iterator& __i) const
+bool istreambuf_iterator<_CharT, _Traits>::_M_equal_aux(const istreambuf_iterator& __i) const
 {
 	if (!this->_M_is_initialized)
 		this->_M_getc();
@@ -741,25 +740,24 @@ void istreambuf_iterator<_CharT, _Traits>::_M_postincr_aux()
 }
 
 template<class _CharT, class _Traits>
-inline bool operator==(const istreambuf_iterator<_CharT, _Traits>& __x,
-					   const istreambuf_iterator<_CharT, _Traits>& __y) {
-						   return __x.equal(__y);
+inline bool operator==(const istreambuf_iterator<_CharT, _Traits>& __x, const istreambuf_iterator<_CharT, _Traits>& __y) 
+{
+	return __x.equal(__y);
 }
 
 #ifdef __STL_FUNCTION_TMPL_PARTIAL_ORDER
 
 template<class _CharT, class _Traits>
-inline bool operator!=(const istreambuf_iterator<_CharT, _Traits>& __x,
-					   const istreambuf_iterator<_CharT, _Traits>& __y) {
-						   return !__x.equal(__y);
+inline bool operator!=(const istreambuf_iterator<_CharT, _Traits>& __x, const istreambuf_iterator<_CharT, _Traits>& __y) 
+{
+	return !__x.equal(__y);
 }
 
 #endif /* __STL_FUNCTION_TMPL_PARTIAL_ORDER */
 
 // The default template argument is declared in iosfwd
 template<class _CharT, class _Traits>
-class ostreambuf_iterator
-	: public iterator<output_iterator_tag, void, void, void, void>
+class ostreambuf_iterator : public iterator<output_iterator_tag, void, void, void, void>
 {
 public:
 	typedef _CharT                           char_type;
@@ -770,12 +768,11 @@ public:
 
 public:
 	ostreambuf_iterator(streambuf_type* __buf) : _M_buf(__buf), _M_ok(__buf) {}
-	ostreambuf_iterator(ostream_type& __o)
-		: _M_buf(__o.rdbuf()), _M_ok(__o.rdbuf() != 0) {}
+	ostreambuf_iterator(ostream_type& __o) : _M_buf(__o.rdbuf()), _M_ok(__o.rdbuf() != 0) {}
 
-	ostreambuf_iterator& operator=(char_type __c) {
-		_M_ok = _M_ok && !traits_type::eq_int_type(_M_buf->sputc(__c),
-			traits_type::eof());
+	ostreambuf_iterator& operator=(char_type __c) 
+	{
+		_M_ok = _M_ok && !traits_type::eq_int_type(_M_buf->sputc(__c), traits_type::eof());
 		return *this;
 	}    
 
@@ -802,8 +799,7 @@ class istream_iterator
 {
 #ifdef __STL_TEMPLATE_FRIENDS
 	template <class _T1, class _D1>
-	friend bool operator==(const istream_iterator<_T1, _D1>&,
-		const istream_iterator<_T1, _D1>&);
+	friend bool operator==(const istream_iterator<_T1, _D1>&, const istream_iterator<_T1, _D1>&);
 #else /* __STL_TEMPLATE_FRIENDS */
 	friend bool __STD_QUALIFIER operator== __STL_NULL_TMPL_ARGS (const istream_iterator&, const istream_iterator&);
 #endif /* __STL_TEMPLATE_FRIENDS */
